@@ -1,0 +1,35 @@
+Pokémon: 12
+2 Pidgeot ex OBF 225
+2 Pidgey OBF 207
+1 Charizard ex OBF 125
+2 Charizard ex OBF 215
+1 Charmeleon OBF 27
+4 Charmander OBF 26
+1 Bidoof CRZ-GG 29
+1 Bibarel CRZ-GG 25
+1 Radiant Charizard CRZ 20
+1 Manaphy CRZ-GG 6
+2 Arceus V PR-SW 204
+2 Arceus VSTAR BRS 123
+
+Trainer: 14
+2 Collapsed Stadium BRS 137 PH
+2 Temple of Sinnoh ASR 155
+4 Ultra Ball BRS 150
+2 Boss's Orders PAL 172
+4 Rare Candy SVI 191
+2 Professor's Research SVI 189
+4 Iono PAL 185
+1 Energy Recycler BST 124
+1 Super Rod PAL 188
+2 Nest Ball SVI 181
+1 Defiance Band SVI 169
+4 Battle VIP Pass FST 225
+1 Switch SVI 194
+1 Escape Rope BST 125
+
+Energy: 2
+7 Basic {R} Energy Energy 10
+2 Double Turbo Energy BRS 151
+
+Total Cards: 60
