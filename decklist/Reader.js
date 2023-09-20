@@ -1,5 +1,5 @@
 const fs = require('fs');
-const readlineSync = require('readline-sync');
+const {split} = require("handlebars-helpers/lib/string");
 
 class  Card {
     constructor(cardType, cardName, set, collectionNum, qty) {
@@ -74,49 +74,55 @@ function processDeckList(filePath) {
     const lines = fileContent.split('\n');
 
     for (const currentLine of lines) {
-        // console.log(`Line: ${currentLine}`);
-        if (currentLine.includes('Trainer: ')) {
+        console.log(`---Line: ${currentLine}---`);
+        if (currentLine.includes('Pokémon: ')){
+            currentCardSection = "Pokemon";
+        } else if(currentLine.includes('Trainer: ')) {
             currentCardSection = 'Trainer';
         } else if (currentLine.includes('Energy: ')) {
             currentCardSection = 'Energy';
         } else if (currentLine.includes('Total Cards: ')) {
             currentCardSection = 'END';
-        }
-        const splitArray = currentLine.split(" ");
-        let qty;
-        let cardName = "";
-        let set;
-        let collectionNum;
-        if (splitArray.length > 0) {
-            qty = splitArray[0];
-            console.log(`qty : ${qty}[ LINE ${currentLine}]`);
-        }
-        // means that there card name has more spaces
-        if (splitArray.length > 4) {
-            let i = splitArray - 1;
-            // we know that last 2 elements are the collection#
-            // and set so lets deal with that.
-            collectionNum = splitArray[i];
-            set = splitArray[i - 1];
-
-            console.log(`collectionNum : ${collectionNum} [LINE ${currentLine}]`);
-            console.log(`set : ${set} [LINE ${currentLine}]`);
-
-
-            // now we know anthing between 1 and (i - 1) is the pokemon card name
-            for (let j = 1; j < (i - 1); j++) {
-                cardName += splitArray[j];
+        } else {
+            const splitArray = currentLine.split(" ");
+            let qty;
+            let cardName = "";
+            let set;
+            let collectionNum;
+            if (splitArray.length > 0) {
+                qty = splitArray[0];
+                console.log(`qty : ${qty}`);
             }
-            console.log(`cardName : ${cardName} [LINE ${currentLine}]`);
+            // means that there card name has more spaces
+            if (splitArray.length > 4) {
+                let i = splitArray.length - 1;
+                // we know that last 2 elements are the collection#
+                // and set so lets deal with that.
+                collectionNum = splitArray[i];
+                set = splitArray[i - 1];
 
-        }
-        if (currentCardSection === 'Trainer') {
-            incrementOrAddKey(cardName, tempTrainerList);
-        } else if (currentCardSection === 'Pokemon') {
-            let aCard = new Card(currentCardSection, cardName, set, collectionNum, qty);
-            pokemonList.push(aCard);
-        } else if (currentCardSection === 'Energy') {
-            energyList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
+                console.log(`collectionNum : ${collectionNum}`);
+                console.log(`set : ${set}`);
+
+
+                // now we know anthing between 1 and (i - 1) is the pokemon card name
+                for (let j = 1; j < (i - 1); j++) {
+                    cardName += `${splitArray[j]} `;
+                }
+                console.log(`cardName : ${cardName}`);
+            } else {
+                cardName = splitArray[1];
+                set = splitArray[2];
+                collectionNum = splitArray[3];
+            }
+            if (currentCardSection === 'Trainer') {
+                incrementOrAddKey(cardName, tempTrainerList);
+            } else if (currentCardSection === 'Pokemon') {
+                let aCard = new Card(currentCardSection, cardName, set, collectionNum, qty);
+                pokemonList.push(aCard);
+            } else if (currentCardSection === 'Energy') {
+                energyList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
+            }
         }
 
     }
