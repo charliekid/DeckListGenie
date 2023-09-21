@@ -1,2 +1,135 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untitled</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+<div class="login-dark">
+  <form method="post">
+    <h2 class="sr-only">Login Form</h2>
+    <div class="illustration"><i class="icon ion-ios-locked-outline" id="downloadIcon"></i></div>
+    <div class="form-group"><input class="form-control" id="name" name="name" placeholder="Full Name" required></div>
+    <div class="form-group"><input class="form-control" id="playerId" name="playerId" placeholder="Pokemon Play ID" required></div>
+    <div class="form-group"><input class="form-control" id="dob" name="dob" placeholder="Date Of Birthday (MM/DD/YYYY)" required></div>
+    <div class="form-group">
+      <select class="custom-form-select" id="ageDivision">
+        <option value="" disabled selected>Age Division</option>
+        <option value="Junior">Junior</option>
+        <option value="Senior">Senior</option>
+        <option value="Masters">Masters</option>
+      </select>
+    </div>
+    <div class="form-group"><textarea class="form-control" id="decklist" name="decklist" placeholder="Paste decklist from Live here" required></textarea></div>
+    <div class="form-group"><button class="btn btn-primary btn-block" type="submit" id="submitButton">Create Decklist PDF</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<script>
+  $(document).ready(function() {
+
+    let isDownloadIcon = false; // Flag to track the current icon state
+
+    // Function to toggle the icon
+    function toggleIcon() {
+      const iconElement = $('#iconElement');
+      if (isDownloadIcon) {
+        iconElement.removeClass('ion-ios-download-outline').addClass('ion-ios-locked-outline');
+      } else {
+        iconElement.removeClass('ion-ios-locked-outline').addClass('ion-ios-download-outline');
+      }
+      isDownloadIcon = !isDownloadIcon; // Toggle the flag
+    }
+
+
+
+    // Function to validate the DOB format
+    function validateDOBFormat(dateString) {
+      const dobPattern = /^\d{2}\/\d{2}\/\d{4}$/; // MM/DD/YYYY format regex
+      return dobPattern.test(dateString);
+    }
+
+// Function to update the validation message
+//     function updateValidationMessage() {
+//       const dobInput = document.getElementById("dob");
+//       const dobValidationMessage = document.getElementById("dobValidationMessage");
+//
+//       if (!validateDOBFormat(dobInput.value)) {
+//         dobValidationMessage.textContent = "Please enter a valid date in MM/DD/YYYY format.";
+//         dobValidationMessage.style.display = "block";
+//       } else {
+//         dobValidationMessage.textContent = "";
+//         dobValidationMessage.style.display = "none";
+//       }
+//     }
+//
+//     document.getElementById("dob").addEventListener("input", updateValidationMessage);
+//     $('#dob').change(function () {
+//        let value = $('#dob').val();
+//
+//     })
+
+    $('#submitButton').on('click', function(e) {
+      console.log($('#name').val());
+      // Do not submit until I am ready
+      e.preventDefault();
+      $.ajax({
+        type: "POST",
+        url: "/submit",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify({
+          // we should prolly hash this
+          "name" : $('#name').val(),
+          "playerId" : $("#playerId").val(),
+          "dob" : $("#dob").val(),
+          "decklist" : $("#decklist").val(),
+          "division" : $("#ageDivision").val()
+        }),
+        // If the login verification is a success do the following
+        success: function(result, status) {
+          console.log("got login status back", result);
+          if (result.successful) {
+            // replace icon and show downloand here
+            toggleIcon();
+            if (isDownloadIcon) {
+              // Replace 'your-file-url' with the actual file URL
+              const fileUrl = '/modified.pdf';
+
+              // Create an invisible link element to trigger the download
+              const downloadLink = document.createElement('a');
+              downloadLink.href = fileUrl;
+              downloadLink.download = 'your-file-name.ext'; // Replace with the desired file name
+              downloadLink.style.display = 'none';
+              document.body.appendChild(downloadLink);
+
+              // Trigger a click event on the link to initiate the download
+              downloadLink.click();
+
+              // Clean up by removing the link element
+              document.body.removeChild(downloadLink);
+            }
+          }
+        },
+        // If the login verification is failed do that following
+        error: function(xhr, status, error) {
+          console.log("We got an error! in login.hbs ajax");
+          err = eval("error: (" + xhr.responseText + ")");
+          console.error(err);
+        },
+        complete: function(data, status) { //optional, used for debugging purposes
+          console.log(status);
+        }
+      });
+    })
+  });
+</script>
+</html>

@@ -117,10 +117,13 @@ function processDeckList(filePath) {
             if (currentCardSection === 'Trainer') {
                 incrementOrAddKey(cardName, tempTrainerList);
             } else if (currentCardSection === 'Pokemon') {
-                let aCard = new Card(currentCardSection, cardName, set, collectionNum, qty);
-                pokemonList.push(aCard);
+                if(cardName !== undefined) {
+                    pokemonList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
+                }
             } else if (currentCardSection === 'Energy') {
-                energyList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
+                if (cardName !== undefined) {
+                    energyList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
+                }
             }
         }
 
@@ -128,7 +131,9 @@ function processDeckList(filePath) {
 
 // process trainer cards
     for (const [cardName, qty] of tempTrainerList) {
-        trainerList.push(new Card('Trainer', cardName, "NA", "NA", qty));
+        if (cardName !== undefined) {
+            trainerList.push(new Card('Trainer', cardName, "NA", "NA", qty));
+        }
     }
 
 // pokemon section output
@@ -146,16 +151,14 @@ function processDeckList(filePath) {
 
     for (const trainerCard of trainerList) {
         trainerQtyOutput += `${trainerCard.qty}\n`;
-        trainerNameOutput += `${trainerCard.name}\n`
+        trainerNameOutput += `${trainerCard.cardName}\n`
     }
 
 // energy section output
-
     for (const energyCard of energyList) {
         energyQtyOutput += `${energyCard.qty}\n`
-        energyNameOutput += `${energyCard.name}\n`
+        energyNameOutput += `${energyCard.cardName}\n`
     }
-
     // console.log(pokemonNameOutput);
 }
 
