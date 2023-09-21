@@ -1,5 +1,4 @@
 const fs = require('fs');
-const {split} = require("handlebars-helpers/lib/string");
 
 class  Card {
     constructor(cardType, cardName, set, collectionNum, qty) {
@@ -74,7 +73,7 @@ function processDeckList(filePath) {
     const lines = fileContent.split('\n');
 
     for (const currentLine of lines) {
-        console.log(`---Line: ${currentLine}---`);
+        // console.log(`---Line: ${currentLine}---`);
         if (currentLine.includes('Pokémon: ')){
             currentCardSection = "Pokemon";
         } else if(currentLine.includes('Trainer: ')) {
@@ -91,7 +90,7 @@ function processDeckList(filePath) {
             let collectionNum;
             if (splitArray.length > 0) {
                 qty = splitArray[0];
-                console.log(`qty : ${qty}`);
+                // console.log(`qty : ${qty}`);
             }
             // means that there card name has more spaces
             if (splitArray.length > 4) {
@@ -101,15 +100,15 @@ function processDeckList(filePath) {
                 collectionNum = splitArray[i];
                 set = splitArray[i - 1];
 
-                console.log(`collectionNum : ${collectionNum}`);
-                console.log(`set : ${set}`);
+                // console.log(`collectionNum : ${collectionNum}`);
+                // console.log(`set : ${set}`);
 
 
                 // now we know anthing between 1 and (i - 1) is the pokemon card name
                 for (let j = 1; j < (i - 1); j++) {
                     cardName += `${splitArray[j]} `;
                 }
-                console.log(`cardName : ${cardName}`);
+                // console.log(`cardName : ${cardName}`);
             } else {
                 cardName = splitArray[1];
                 set = splitArray[2];
@@ -157,7 +156,7 @@ function processDeckList(filePath) {
         energyNameOutput += `${energyCard.name}\n`
     }
 
-    console.log(pokemonNameOutput);
+    // console.log(pokemonNameOutput);
 }
 
 
@@ -171,8 +170,40 @@ function incrementOrAddKey(key, aMap) {
     }
 }
 
+function getPokemonNames() {
+    return pokemonNameOutput;
+}
+
+function getPokemonQty() {
+    return pokemonQtyOutput;
+}
+
+function getPokemonSet() {
+    return pokemonSetOutput;
+}
+
+function getPokemonCollection() {
+    return pokemonCollectionOutput;
+}
+
+function getTrainerQty() {
+    return trainerQtyOutput;
+}
+
+function getTrainerNames() {
+    return trainerNameOutput;
+}
+
+function getEnergyQty() {
+    return energyQtyOutput;
+}
+
+function getEnergyName() {
+    return energyNameOutput;
+}
 
 
 module.exports = {processDeckList, pokemonQtyOutput , pokemonNameOutput,
     pokemonSetOutput, pokemonCollectionOutput, trainerQtyOutput,
-    trainerNameOutput, energyQtyOutput, energyNameOutput}
+    trainerNameOutput, energyQtyOutput, energyNameOutput, getPokemonNames, getPokemonQty, getPokemonSet, getPokemonCollection,
+    getTrainerQty, getTrainerNames, getEnergyName, getEnergyQty}
