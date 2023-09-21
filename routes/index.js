@@ -7,7 +7,7 @@ var pdfHandler = require('../decklist/PdfHandler');
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-  await pdfHandler.main("Name", "IDDDDD", "20/32/2322", "Junior");
+  // await pdfHandler.main("Name", "IDDDDD", "20/32/2322", "Junior");
   res.render('index', {title: 'Express'});
 });
 
