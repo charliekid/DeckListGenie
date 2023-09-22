@@ -77,6 +77,8 @@ async function main(name, playerId, dob, division) {
       writeOnPage(firstPage, "X", x_age_division, y_senior, height, helveticaFont);
     } else if (division === "Masters") {
       writeOnPage(firstPage, "X", x_age_division, y_master, height, helveticaFont);
+    } else {
+      // log error
     }
 
 
@@ -87,7 +89,7 @@ async function main(name, playerId, dob, division) {
     console.log(`PDF file written to: ${filePath}`);
   }
   catch(e) {
-    console.log("error");
+    console.log("Error: Something is wrong with your decklist submission");
   }
 }
 

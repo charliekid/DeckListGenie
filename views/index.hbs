@@ -15,9 +15,13 @@
   <form method="post">
     <h2 class="sr-only">Login Form</h2>
     <div class="illustration"><i class="icon ion-ios-locked-outline" id="downloadIcon"></i></div>
+
     <div class="form-group"><input class="form-control" id="name" name="name" placeholder="Full Name" required></div>
+
     <div class="form-group"><input class="form-control" id="playerId" name="playerId" placeholder="Pokemon Play ID" required></div>
+
     <div class="form-group"><input class="form-control" id="dob" name="dob" placeholder="Date Of Birthday (MM/DD/YYYY)" required></div>
+
     <div class="form-group">
       <select class="custom-form-select" id="ageDivision">
         <option value="" disabled selected>Age Division</option>
@@ -25,8 +29,10 @@
         <option value="Senior">Senior</option>
         <option value="Masters">Masters</option>
       </select>
+
     </div>
     <div class="form-group"><textarea class="form-control" id="decklist" name="decklist" placeholder="Paste decklist from Live here" required></textarea></div>
+    <div class="invalid-feedback">Required</div>
     <div class="form-group"><button class="btn btn-primary btn-block" type="submit" id="submitButton">Create Decklist PDF</button>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -40,7 +46,7 @@
 
     // Function to toggle the icon
     function toggleIcon() {
-      const iconElement = $('#iconElement');
+      const iconElement = $('#downloadIcon');
       if (isDownloadIcon) {
         iconElement.removeClass('ion-ios-download-outline').addClass('ion-ios-locked-outline');
       } else {
@@ -51,84 +57,121 @@
 
 
 
+    function validateForm() {
+      var isValid = true;
+      var dobFormatValid = true;
+      const nameField = $('#name');
+      const playerIdField = $('#playerId');
+      const dobField = $('#dob');
+      const decklistField = $('#decklist');
+      const ageDivisionField = $('#ageDivision');
+
+      var formFields = [];
+
+      formFields.push(nameField);
+      formFields.push(playerIdField);
+      formFields.push(dobField);
+      formFields.push(decklistField);
+      formFields.push(ageDivisionField);
+
+      if(!validateDOBFormat(dobField.val())) {
+        dobField.css('border-color', 'red');
+        isValid = false;
+      } else {
+        dobField.css('border-color', 'green');
+      }
+
+      formFields.forEach(function($input) {
+        console.log(`currently validate ${$input}`);
+        if($input.val().trim() === '') {
+          $input.css('border-color', 'red');
+          isValid = false;
+        } else {
+          $input.css('border-color', 'green');
+        }
+      });
+
+
+      console.log(`done cehcking fields is valid is ${isValid}`)
+      return isValid;
+    }
+
+
     // Function to validate the DOB format
     function validateDOBFormat(dateString) {
-      const dobPattern = /^\d{2}\/\d{2}\/\d{4}$/; // MM/DD/YYYY format regex
+
+      const dobPattern = /\d{2}\/\d{2}\/\d{4}/;
+      console.log(`validating dob ${dobPattern.test(dateString)}`);
       return dobPattern.test(dateString);
     }
 
-// Function to update the validation message
-//     function updateValidationMessage() {
-//       const dobInput = document.getElementById("dob");
-//       const dobValidationMessage = document.getElementById("dobValidationMessage");
-//
-//       if (!validateDOBFormat(dobInput.value)) {
-//         dobValidationMessage.textContent = "Please enter a valid date in MM/DD/YYYY format.";
-//         dobValidationMessage.style.display = "block";
-//       } else {
-//         dobValidationMessage.textContent = "";
-//         dobValidationMessage.style.display = "none";
-//       }
-//     }
-//
-//     document.getElementById("dob").addEventListener("input", updateValidationMessage);
-//     $('#dob').change(function () {
-//        let value = $('#dob').val();
-//
-//     })
+    // function validateForm() {
+    //
+    //   $('#name').val(),
+    //   $("#playerId").val(),
+    //   $("#dob").val(),
+    //   $("#decklist").val(),
+    //   $("#ageDivision").val()
+    // }
 
     $('#submitButton').on('click', function(e) {
-      console.log($('#name').val());
-      // Do not submit until I am ready
       e.preventDefault();
-      $.ajax({
-        type: "POST",
-        url: "/submit",
-        dataType: "json",
-        contentType: "application/json",
-        data: JSON.stringify({
-          // we should prolly hash this
-          "name" : $('#name').val(),
-          "playerId" : $("#playerId").val(),
-          "dob" : $("#dob").val(),
-          "decklist" : $("#decklist").val(),
-          "division" : $("#ageDivision").val()
-        }),
-        // If the login verification is a success do the following
-        success: function(result, status) {
-          console.log("got login status back", result);
-          if (result.successful) {
-            // replace icon and show downloand here
-            toggleIcon();
-            if (isDownloadIcon) {
-              // Replace 'your-file-url' with the actual file URL
-              const fileUrl = '/modified.pdf';
+      // check to make sure data is good
+      if(validateForm()) {
+        console.log("form is valid");
+        $('#submitButton').text("Generating...");
 
-              // Create an invisible link element to trigger the download
-              const downloadLink = document.createElement('a');
-              downloadLink.href = fileUrl;
-              downloadLink.download = 'your-file-name.ext'; // Replace with the desired file name
-              downloadLink.style.display = 'none';
-              document.body.appendChild(downloadLink);
+        // Do not submit until I am ready
+        $.ajax({
+          type: "POST",
+          url: "/submit",
+          dataType: "json",
+          contentType: "application/json",
+          data: JSON.stringify({
+            // we should prolly hash this
+            "name": $('#name').val(),
+            "playerId": $("#playerId").val(),
+            "dob": $("#dob").val(),
+            "decklist": $("#decklist").val(),
+            "division": $("#ageDivision").val()
+          }),
+          // If the login verification is a success do the following
+          success: function (result, status) {
+            console.log("got login status back", result);
+            if (result.successful) {
+              // replace icon and show downloand here
+              toggleIcon();
+              if (isDownloadIcon) {
+                // Replace 'your-file-url' with the actual file URL
+                const fileUrl = '/modified.pdf';
 
-              // Trigger a click event on the link to initiate the download
-              downloadLink.click();
+                // Create an invisible link element to trigger the download
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fileUrl;
+                downloadLink.download = 'your-file-name.ext'; // Replace with the desired file name
+                downloadLink.style.display = 'none';
+                document.body.appendChild(downloadLink);
 
-              // Clean up by removing the link element
-              document.body.removeChild(downloadLink);
+                // Trigger a click event on the link to initiate the download
+                downloadLink.click();
+
+                // Clean up by removing the link element
+                document.body.removeChild(downloadLink);
+                $('#submitButton').text("Create Decklist PDF");
+              }
             }
+          },
+          // If the login verification is failed do that following
+          error: function (xhr, status, error) {
+            $("#decklist").css('border-color', 'red');
+            console.error(err);
+          },
+          complete: function (data, status) { //optional, used for debugging purposes
+            $('#submitButton').text("Create Decklist PDF");
+            console.log(status);
           }
-        },
-        // If the login verification is failed do that following
-        error: function(xhr, status, error) {
-          console.log("We got an error! in login.hbs ajax");
-          err = eval("error: (" + xhr.responseText + ")");
-          console.error(err);
-        },
-        complete: function(data, status) { //optional, used for debugging purposes
-          console.log(status);
-        }
-      });
+        });
+      }
     })
   });
 </script>

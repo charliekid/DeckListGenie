@@ -4,20 +4,20 @@ var express = require('express');
 var router = express.Router();
 var reader = require("../decklist/Reader")
 var pdfHandler = require('../decklist/PdfHandler');
-
-const {getLogger} = require("log4js");
-const logger = getLogger("index.js");
+//
+// const {getLogger} = require("log4j");
+// const logger = getLogger("index.js");
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-  // await pdfHandler.main("Name", "IDDDDD", "20/32/2322", "Junior");
-  res.render('index', {title: 'Express'});
+  res.render('index', {title: 'Decklist Genie'});
 });
 
 
 router.post('/submit', async function (req, res, next) {
   //save decklist to txt
   try {
+    console.log("inside of /submit");
     let fileName = 'submittedList.txt';
     // console.log(req.body.name);
     fs.writeFile(fileName, req.body.decklist, async (err) => {
@@ -32,7 +32,7 @@ router.post('/submit', async function (req, res, next) {
       }
     });
   } catch (e) {
-
+    res.status(500).json({ error: errorMessage });
   }
 });
 

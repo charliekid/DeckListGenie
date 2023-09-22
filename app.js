@@ -2,12 +2,10 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-var log4js = require("log4js2");
+var log4js= require("log4js");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const {getLogger} = require("log4js2");
 
 var app = express();
 
@@ -15,7 +13,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -41,24 +38,12 @@ app.use(function(err, req, res, next) {
 });
 
 // log setup
+//log4js setup
 log4js.configure({
-  layout : {type: "basic"},
-  appenders : [{
-    out: {
-      type : "file",
-      fileName : "logs/decklist.log",
-      maxLogSize:"2M",
-      layout : {
-        type: "basic"
-      }
-    }
-  }],
-  categories : {
-    default: {
-      appenders: ["out"],
-      level: "info"
-    }
-  }
+  appenders: { out: { type: "file", filename:"logs/decklist.log", maxLogSize:"2M", layout: { type: "basic" } } },
+  categories: { default: { appenders: ["out"], level: "info" } },
 });
+
+
 
 module.exports = app;
