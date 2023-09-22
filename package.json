@@ -11,6 +11,7 @@
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
+    "log4js2": "^2.0.0-alpha1",
     "morgan": "~1.9.1",
     "pdf-lib": "^1.17.1",
     "readline-sync": "^1.4.10"
