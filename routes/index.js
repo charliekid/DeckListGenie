@@ -24,7 +24,7 @@ router.post('/submit', async function (req, res, next) {
       if (err) {
         console.error('Error writing to file:', err);
       } else {
-        console.log(`Text has been written to ${fileName}`);
+        console.log(`Text has been written `);
         await pdfHandler.main(req.body.name, req.body.playerId, req.body.dob, req.body.division );
         res.json({
           successful : true

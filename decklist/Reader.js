@@ -1,5 +1,6 @@
 const fs = require('fs');
-
+const log4js = require("log4js");
+const logger = log4js.getLogger("Reader");
 class  Card {
     constructor(cardType, cardName, set, collectionNum, qty) {
         this._cardType = cardType;
@@ -68,12 +69,14 @@ let energyList = [];
 let trainerList = [];
 
 function processDeckList(filePath) {
+    logger.info(`[processDeckList] - START:`);
     let currentCardSection = "Pokemon";
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     const lines = fileContent.split('\n');
 
     for (const currentLine of lines) {
-        // console.log(`---Line: ${currentLine}---`);
+        logger.info(`[processDeckList] - reading current line`);
+        // logger.info(`---Line: ${currentLine}---`);
         if (currentLine.includes('Pokémon: ')){
             currentCardSection = "Pokemon";
         } else if(currentLine.includes('Trainer: ')) {
@@ -90,7 +93,7 @@ function processDeckList(filePath) {
             let collectionNum;
             if (splitArray.length > 0) {
                 qty = splitArray[0];
-                // console.log(`qty : ${qty}`);
+                // logger.info(`qty : ${qty}`);
             }
             // means that there card name has more spaces
             if (splitArray.length > 4) {
@@ -100,22 +103,24 @@ function processDeckList(filePath) {
                 collectionNum = splitArray[i];
                 set = splitArray[i - 1];
 
-                // console.log(`collectionNum : ${collectionNum}`);
-                // console.log(`set : ${set}`);
+                // logger.info(`collectionNum : ${collectionNum}`);
+                // logger.info(`set : ${set}`);
 
 
                 // now we know anthing between 1 and (i - 1) is the pokemon card name
                 for (let j = 1; j < (i - 1); j++) {
                     cardName += `${splitArray[j]} `;
                 }
-                // console.log(`cardName : ${cardName}`);
+                // logger.info(`cardName : ${cardName}`);
             } else {
                 cardName = splitArray[1];
                 set = splitArray[2];
                 collectionNum = splitArray[3];
             }
+            logger.info(`[processDeckList] - processing ${currentCardSection} card`);
             if (currentCardSection === 'Trainer') {
-                incrementOrAddKey(cardName, tempTrainerList);
+                incrementOrAddKey2(cardName, tempTrainerList, qty)
+                // incrementOrAddKey(cardName, tempTrainerList, qty);
             } else if (currentCardSection === 'Pokemon') {
                 if(cardName !== undefined) {
                     pokemonList.push(new Card(currentCardSection, cardName, set, collectionNum, qty));
@@ -138,6 +143,7 @@ function processDeckList(filePath) {
 
 // pokemon section output
 
+    logger.info(`[processDeckList] - START processing pokemon output`);
 
     for (const pokemonCard of pokemonList) {
         pokemonQtyOutput += `${pokemonCard.qty}\n`;
@@ -145,31 +151,45 @@ function processDeckList(filePath) {
         pokemonSetOutput += `${pokemonCard.set}\n`;
         pokemonCollectionOutput += `${pokemonCard.collectionNum}\n`;
     }
-
+    logger.info(`[processDeckList] - END processing pokemon output`);
 
 // trainer section output
-
+    logger.info(`[processDeckList] - START processing Trainer output`);
     for (const trainerCard of trainerList) {
         trainerQtyOutput += `${trainerCard.qty}\n`;
         trainerNameOutput += `${trainerCard.cardName}\n`
     }
-
+    logger.info(`[processDeckList] - END processing Trainer output`);
+    logger.info(`[processDeckList] - START processing Energy output`);
 // energy section output
     for (const energyCard of energyList) {
         energyQtyOutput += `${energyCard.qty}\n`
         energyNameOutput += `${energyCard.cardName}\n`
     }
-    // console.log(pokemonNameOutput);
+    // logger.info(pokemonNameOutput);
+    logger.info(`[processDeckList] - END processing Energy output`);
 }
 
+function incrementOrAddKey2(keyToCheck, map, qty) {
+    if (map.has(keyToCheck)) {
+        // Key exists, so add x to it
+        const currentValue = map.get(keyToCheck);
+        map.set(keyToCheck, currentValue + qty);
+    } else {
+        // Key doesn't exist, so create a new key with the value of x
+        map.set(keyToCheck, qty);
+    }
+}
 
-function incrementOrAddKey(key, aMap) {
+function incrementOrAddKey(key, aMap, qty) {
     if (aMap.has(key)) {
         // Key exists, so increment the value by one
-        aMap.set(key, aMap.get(key) + 1);
+        logger.info("adding by one");
+        aMap.set(key, aMap.get(key) + qty);
     } else {
         // Key does not exist, so add it with a count of 1
-        aMap.set(key, 1);
+        cosole.log("")
+        aMap.set(key, qty);
     }
 }
 

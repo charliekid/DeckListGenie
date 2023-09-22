@@ -4,6 +4,8 @@ var PdfLib = require('pdf-lib');
 var PDFDocument = PdfLib.PDFDocument;
 var StandardFonts = PdfLib.StandardFonts;
 var rgb = PdfLib.rgb;
+const log4js = require("log4js");
+const logger = log4js.getLogger("PdfHandler");
 
 let x_qty = 283;
 let x_name = 310;
@@ -31,7 +33,7 @@ async function main(name, playerId, dob, division) {
   // reader.processDeckList("./submittedList.txt");
   try {
     reader.processDeckList("./submittedList.txt");
-    // console.log(reader.pokemonNameOutput)
+    // logger.info(reader.pokemonNameOutput)
     // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
 // If your running in a Node environment, you could use fs.readFile()
@@ -67,8 +69,8 @@ async function main(name, playerId, dob, division) {
     writeOnPage(firstPage, playerId, x_player_id, y_player_info, height, helveticaFont);
 
     let splitDob = dob.split("/");
-    writeOnPage(firstPage, splitDob[0], x_dob_day, y_player_info, height, helveticaFont);
-    writeOnPage(firstPage, splitDob[1], x_dob_month, y_player_info, height, helveticaFont);
+    writeOnPage(firstPage, splitDob[0], x_dob_month, y_player_info, height, helveticaFont);
+    writeOnPage(firstPage, splitDob[1], x_dob_day, y_player_info, height, helveticaFont);
     writeOnPage(firstPage, splitDob[2], x_dob_year, y_player_info, height, helveticaFont);
 
     if (division === "Junior") {
@@ -86,10 +88,10 @@ async function main(name, playerId, dob, division) {
 
     const filePath = `${__dirname}/../public/modified.pdf`;
     fs.writeFileSync(filePath, pdfBytes);
-    console.log(`PDF file written to: ${filePath}`);
+    logger.info(`PDF file written `);
   }
   catch(e) {
-    console.log("Error: Something is wrong with your decklist submission");
+    logger.info("Error: Something is wrong with your decklist submission");
   }
 }
 
