@@ -35,10 +35,61 @@ async function main(name, playerId, dob, division) {
     reader.processDeckList("./submittedList.txt");
     // create a copy of the decklist.pdf
     console.log("copying decklist pdf")
-    fs.copyFile("decklist.pdf", "decklist-copy.pdf", (err) => {
-      if(err) {
+    fs.copyFile("decklist.pdf", "decklist-copy.pdf", async (err) => {
+      if (err) {
         logger.error(err);
         console.log(`[PdfHandler.js ]ERROR ${err}`);
+      } else {
+        const existingPdfBytes = fs.readFileSync("decklist-copy.pdf");
+
+        // Load a PDFDocument from the existing PDF bytes
+        const pdfDoc = await PDFDocument.load(existingPdfBytes)
+
+        // Embed the Helvetica font
+        const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+
+        // Get the first page of the document
+        const pages = pdfDoc.getPages()
+        const firstPage = pages[0]
+
+        // Get the width and height of the first page
+        const {width, height} = firstPage.getSize();
+
+        writeOnPage(firstPage, reader.getPokemonQty(), x_qty, y_pokemon, height, helveticaFont);
+        writeOnPage(firstPage, reader.getPokemonNames(), x_name, y_pokemon, height, helveticaFont);
+        writeOnPage(firstPage, reader.getPokemonSet(), x_set, y_pokemon, height, helveticaFont);
+        writeOnPage(firstPage, reader.getPokemonCollection(), x_collectionNum, y_pokemon, height, helveticaFont);
+
+        writeOnPage(firstPage, reader.getTrainerQty(), x_qty, y_trainer, height, helveticaFont);
+        writeOnPage(firstPage, reader.getTrainerNames(), x_name, y_trainer, height, helveticaFont);
+
+        writeOnPage(firstPage, reader.getEnergyQty(), x_qty, y_energy, height, helveticaFont);
+        writeOnPage(firstPage, reader.getEnergyName(), x_name, y_energy, height, helveticaFont);
+
+        // name and stuff
+        writeOnPage(firstPage, name, x_player_name, y_player_info, height, helveticaFont);
+        writeOnPage(firstPage, playerId, x_player_id, y_player_info, height, helveticaFont);
+
+        let splitDob = dob.split("/");
+        writeOnPage(firstPage, splitDob[0], x_dob_month, y_player_info, height, helveticaFont);
+        writeOnPage(firstPage, splitDob[1], x_dob_day, y_player_info, height, helveticaFont);
+        writeOnPage(firstPage, splitDob[2], x_dob_year, y_player_info, height, helveticaFont);
+
+        if (division === "Junior") {
+          writeOnPage(firstPage, "X", x_age_division, y_junior, height, helveticaFont);
+        } else if (division === "Senior") {
+          writeOnPage(firstPage, "X", x_age_division, y_senior, height, helveticaFont);
+        } else if (division === "Masters") {
+          writeOnPage(firstPage, "X", x_age_division, y_master, height, helveticaFont);
+        } else {
+          // log error
+        }
+
+        const pdfBytes = await pdfDoc.save()
+
+        const filePath = `${__dirname}/../public/modified.pdf`;
+        fs.writeFileSync(filePath, pdfBytes);
+        logger.info(`PDF file written `);
       }
     })
     console.log("finished copying decklist pdf")
@@ -47,57 +98,7 @@ async function main(name, playerId, dob, division) {
 // This data can be obtained in a number of different ways
 // If your running in a Node environment, you could use fs.readFile()
 // In the browser, you could make a fetch() call and use res.arrayBuffer()
-    const existingPdfBytes = fs.readFileSync("decklist-copy.pdf");
 
-// Load a PDFDocument from the existing PDF bytes
-    const pdfDoc = await PDFDocument.load(existingPdfBytes)
-
-// Embed the Helvetica font
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
-
-    // Get the first page of the document
-    const pages = pdfDoc.getPages()
-    const firstPage = pages[0]
-
-// Get the width and height of the first page
-    const {width, height} = firstPage.getSize();
-
-    writeOnPage(firstPage, reader.getPokemonQty(), x_qty, y_pokemon, height, helveticaFont);
-    writeOnPage(firstPage, reader.getPokemonNames(), x_name, y_pokemon, height, helveticaFont);
-    writeOnPage(firstPage, reader.getPokemonSet(), x_set, y_pokemon, height, helveticaFont);
-    writeOnPage(firstPage, reader.getPokemonCollection(), x_collectionNum, y_pokemon, height, helveticaFont);
-
-    writeOnPage(firstPage, reader.getTrainerQty(), x_qty, y_trainer, height, helveticaFont);
-    writeOnPage(firstPage, reader.getTrainerNames(), x_name, y_trainer, height, helveticaFont);
-
-    writeOnPage(firstPage, reader.getEnergyQty(), x_qty, y_energy, height, helveticaFont);
-    writeOnPage(firstPage, reader.getEnergyName(), x_name, y_energy, height, helveticaFont);
-
-    // name and stuff
-    writeOnPage(firstPage, name, x_player_name, y_player_info, height, helveticaFont);
-    writeOnPage(firstPage, playerId, x_player_id, y_player_info, height, helveticaFont);
-
-    let splitDob = dob.split("/");
-    writeOnPage(firstPage, splitDob[0], x_dob_month, y_player_info, height, helveticaFont);
-    writeOnPage(firstPage, splitDob[1], x_dob_day, y_player_info, height, helveticaFont);
-    writeOnPage(firstPage, splitDob[2], x_dob_year, y_player_info, height, helveticaFont);
-
-    if (division === "Junior") {
-      writeOnPage(firstPage, "X", x_age_division, y_junior, height, helveticaFont);
-    } else if (division === "Senior") {
-      writeOnPage(firstPage, "X", x_age_division, y_senior, height, helveticaFont);
-    } else if (division === "Masters") {
-      writeOnPage(firstPage, "X", x_age_division, y_master, height, helveticaFont);
-    } else {
-      // log error
-    }
-
-
-    const pdfBytes = await pdfDoc.save()
-
-    const filePath = `${__dirname}/../public/modified.pdf`;
-    fs.writeFileSync(filePath, pdfBytes);
-    logger.info(`PDF file written `);
   }
   catch(e) {
     logger.info("Error: Something is wrong with your decklist submission");
