@@ -34,11 +34,14 @@ async function main(name, playerId, dob, division) {
   try {
     reader.processDeckList("./submittedList.txt");
     // create a copy of the decklist.pdf
+    console.log("copying decklist pdf")
     fs.copyFile("decklist.pdf", "decklist-copy.pdf", (err) => {
       if(err) {
         logger.error(err);
+        console.log(`[PdfHandler.js ]ERROR ${err}`);
       }
     })
+    console.log("finished copying decklist pdf")
     // logger.info(reader.pokemonNameOutput)
     // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -98,6 +101,7 @@ async function main(name, playerId, dob, division) {
   }
   catch(e) {
     logger.info("Error: Something is wrong with your decklist submission");
+    console.log(e);
   }
 }
 
