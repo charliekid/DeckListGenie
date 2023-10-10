@@ -33,12 +33,18 @@ async function main(name, playerId, dob, division) {
   // reader.processDeckList("./submittedList.txt");
   try {
     reader.processDeckList("./submittedList.txt");
+    // create a copy of the decklist.pdf
+    fs.copyFile("decklist.pdf", "decklist-copy.pdf", (err) => {
+      if(err) {
+        logger.error(err);
+      }
+    })
     // logger.info(reader.pokemonNameOutput)
     // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
 // If your running in a Node environment, you could use fs.readFile()
 // In the browser, you could make a fetch() call and use res.arrayBuffer()
-    const existingPdfBytes = fs.readFileSync("decklist.pdf");
+    const existingPdfBytes = fs.readFileSync("decklist-copy.pdf");
 
 // Load a PDFDocument from the existing PDF bytes
     const pdfDoc = await PDFDocument.load(existingPdfBytes)
