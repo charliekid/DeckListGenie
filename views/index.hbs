@@ -15,7 +15,10 @@
 <div class="login-dark">
   <form method="post">
     <h2 class="sr-only">Login Form</h2>
-    <div class="illustration"><i class="icon ion-ios-locked-outline" id="downloadIcon"></i></div>
+    <div class="illustration">
+        <i class="icon ion-ios-locked-outline" id="downloadIcon"></i>
+        <div class="download-text" id="download-text"></div>
+    </div>
 
     <div class="form-group"><input class="form-control" id="name" name="name" placeholder="Full Name" required></div>
 
@@ -48,11 +51,7 @@
     // Function to toggle the icon
     function toggleIcon() {
       const iconElement = $('#downloadIcon');
-      if (isDownloadIcon) {
-        iconElement.removeClass('ion-ios-download-outline').addClass('ion-ios-locked-outline');
-      } else {
-        iconElement.removeClass('ion-ios-locked-outline').addClass('ion-ios-download-outline');
-      }
+      iconElement.removeClass('ion-ios-locked-outline').addClass('ion-ios-download-outline');
       isDownloadIcon = !isDownloadIcon; // Toggle the flag
     }
 
@@ -122,6 +121,10 @@
         console.log("form is valid");
         $('#submitButton').text("Generating...");
 
+        // check to see if a download link exists.
+      if($("#download-text-link").is("*")) {
+          $("#download-text-link").remove();
+      }
         // Do not submit until I am ready
         $.ajax({
           type: "POST",
@@ -138,28 +141,27 @@
           }),
           // If the login verification is a success do the following
           success: function (result, status) {
-            console.log("got login status back", result);
             if (result.successful) {
               // replace icon and show downloand here
               toggleIcon();
-              if (isDownloadIcon) {
-                // Replace 'your-file-url' with the actual file URL
-                const fileUrl = '/modified.pdf';
+              // Replace 'your-file-url' with the actual file URL
+              const fileUrl = '/modified.pdf';
 
-                // Create an invisible link element to trigger the download
-                const downloadLink = document.createElement('a');
-                downloadLink.href = fileUrl;
-                downloadLink.download = 'modified.pdf'; // Replace with the desired file name
-                downloadLink.style.display = 'none';
-                document.body.appendChild(downloadLink);
 
-                // Trigger a click event on the link to initiate the download
-                downloadLink.click();
+              const downloadTextElement = $("<a>");
 
-                // Clean up by removing the link element
-                document.body.removeChild(downloadLink);
-                $('#submitButton').text("Create Decklist PDF");
-              }
+              downloadTextElement.text("Click to download");
+              downloadTextElement.attr("href", fileUrl);
+              downloadTextElement.attr("download", "modified.pdf");
+              downloadTextElement.attr("id", "download-text-link")
+              $("#download-text").append(downloadTextElement);
+
+              downloadTextElement[0].click();
+
+              // Clean up by removing the link element
+              // document.body.removeChild(downloadLink);
+              // $('#submitButton').text("Create Decklist PDF");
+
             }
           },
           // If the login verification is failed do that following
