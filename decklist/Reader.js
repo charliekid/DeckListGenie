@@ -225,8 +225,26 @@ function getEnergyName() {
     return energyNameOutput;
 }
 
+function clearOutputEntries() {
+    pokemonQtyOutput = "";
+    pokemonNameOutput = "";
+    pokemonSetOutput = "";
+    pokemonCollectionOutput = "";
+
+    trainerQtyOutput = "";
+    trainerNameOutput = "";
+
+    energyQtyOutput = "";
+    energyNameOutput  = "";
+
+    pokemonList = [];
+    tempTrainerList = new Map;
+    energyList = [];
+    trainerList = [];
+}
+
 
 module.exports = {processDeckList, pokemonQtyOutput , pokemonNameOutput,
     pokemonSetOutput, pokemonCollectionOutput, trainerQtyOutput,
     trainerNameOutput, energyQtyOutput, energyNameOutput, getPokemonNames, getPokemonQty, getPokemonSet, getPokemonCollection,
-    getTrainerQty, getTrainerNames, getEnergyName, getEnergyQty}
+    getTrainerQty, getTrainerNames, getEnergyName, getEnergyQty, clearOutputEntries}
