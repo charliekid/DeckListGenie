@@ -26,6 +26,13 @@
   color:#2980ef;
 }
 
+.login-dark .download-text {
+  text-align:center;
+  padding:15px 0 20px;
+  font-size:30px;
+  color:#2980ef;
+}
+
 .login-dark form .form-control {
   background:none;
   border:none;
