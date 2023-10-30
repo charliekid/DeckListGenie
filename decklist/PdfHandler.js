@@ -32,6 +32,7 @@ let y_player_info = 88;
 async function main(name, playerId, dob, division) {
   // reader.processDeckList("./submittedList.txt");
   try {
+    reader.clearOutputEntries();
     reader.processDeckList("./submittedList.txt");
     // create a copy of the decklist.pdf
     console.log("copying decklist pdf")
