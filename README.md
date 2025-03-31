@@ -1,50 +1,19 @@
-Read in text file
+# Decklist Genie
+A simple web app to help create a PDF of deck list used for submission at Pokemon events.
 
-Sections of file
-- Pokemon
-- Trainer 
-- Energy
-
-Pokemon Section
-- qty
-- cardName
-- set
-- collection #
-
-Trainer Section
-- qty
-- cardName
-- set
-- collection #
-
-Energy section
-- qty
-- cardName
-- set
-- collection #
-
-CardClass
-- qty
-- cardName
-- set
-- collection #
-
-CardTypeEnum
-- pokemon
-- trainer
-- energy
+## Project Description
+Developed a tool to streamline deck list submission for Pokémon-sanctioned events. Participants who practice using Pokémon Trading Card Game Live (PTCG Live) can copy their digital deck and paste it into the tool which automatically generates a printable deck list for official submission, enhancing convenience and accuracy.
 
 
-'SVI'
-'PAL'
-'BST'
-'CRE'
-'EVS'
-'CEL'
-'FST'
-'BRS'
-'ASR'
-'PGO'
-'LOR'
-'SIT'
-'CRZ'
+## Screenshots
+### Submit info
+Enter in information needed for the deck list.
+![home-menu](public/img/app-screenshot-1.png)
+
+### Download Link
+Download generated PDF by clicking the Link
+![download-pdf](public/img/app-screenshot-2.png)
+
+### Generated PDF
+Generated PDF
+![generated-pdf](public/img/app-screenshot-3.png)
