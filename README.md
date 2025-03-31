@@ -12,8 +12,8 @@ Enter in information needed for the deck list.
 
 ### Download Link
 Download generated PDF by clicking the Link
-![download-pdf](public/img/app-screenshot-2.PNG)
+![download-pdf](public/imgs/app-screenshot-2.PNG)
 
 ### Generated PDF
 Generated PDF
-![generated-pdf](public/img/app-screenshot-3.PNG)
+![generated-pdf](public/imgs/app-screenshot-3.PNG)
