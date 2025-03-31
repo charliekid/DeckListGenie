@@ -8,12 +8,12 @@ Developed a tool to streamline deck list submission for Pokémon-sanctioned even
 ## Screenshots
 ### Submit info
 Enter in information needed for the deck list.
-![home-menu](/public/img/app-screenshot-1.png)
+![home-menu](public/imgs/app-screenshot-1.PNG)
 
 ### Download Link
 Download generated PDF by clicking the Link
-![download-pdf](public/img/app-screenshot-2.png)
+![download-pdf](public/img/app-screenshot-2.PNG)
 
 ### Generated PDF
 Generated PDF
-![generated-pdf](public/img/app-screenshot-3.png)
+![generated-pdf](public/img/app-screenshot-3.PNG)
